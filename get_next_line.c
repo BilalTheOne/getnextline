@@ -6,11 +6,37 @@
 /*   By: bel-barb <bel-barb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/03 18:21:09 by bel-barb          #+#    #+#             */
-/*   Updated: 2024/01/05 10:50:42 by bel-barb         ###   ########.fr       */
+/*   Updated: 2024/01/05 13:17:25 by bel-barb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+char	*ft_strjoinn(char *s1, char *s2)
+{
+	int		i;
+	int		j;
+	char	*returrn;
+
+	i = 0;
+	j = 0;
+	if (!s1 && !s2)
+		return (NULL);
+	if (!s1)
+		return ((char *)s2);
+	if (!s2)
+		return ((char *)s1);
+	returrn = (char *)malloc((ft_strlen(s1) + ft_strlen(s2) + 1));
+	if (!returrn)
+		return (free(s1), NULL);
+	while (s1[i] != '\0')
+		returrn[j++] = s1[i++];
+	i = 0;
+	while (s2[i] != '\0')
+		returrn[j++] = s2[i++];
+	returrn[j] = 0;
+	return (free(s2), free(s1), returrn);
+}
 
 char	*read_file(int fd, char **line)
 {
@@ -48,7 +74,7 @@ char	*before_nl(char **buf)
 		i++;
 	if (ft_strchr(*buf, '\n'))
 		i++;
-	line = ft_calloc(i + 1, 1);
+	line = ft_calloc(i + 1, 1); 
 	if (!line)
 		return (free(*buf), *buf = NULL, NULL);
 	if ((*buf)[0] == '\n')
@@ -99,7 +125,9 @@ char	*get_next_line(int fd)
 	static char	*rest = NULL;
 	char		*buf;
 	char		*line;
-
+	char		*tmp;
+	
+	
 	if (fd < 0 || BUFFER_SIZE <= 0 || fd >= OPEN_MAX || read(fd, 0, 0) < 0)
 		return (free(rest), rest = NULL, NULL);
 	line = NULL;
@@ -113,20 +141,33 @@ char	*get_next_line(int fd)
 	if (!buf)
 		return (free(rest), rest = NULL, NULL);
 	read_file(fd, &buf);
-	line = ft_strjoin(line, before_nl(&buf));
+	tmp = before_nl(&buf);
+	line = ft_strjoinn(line, tmp);
 	free(rest);
 	rest = NULL;
 	rest = after_nl(&buf);
 	return (free(buf), buf = NULL, line);
 }
-#include <stdio.h>
-int	main()
-{
+// #include <stdio.h>
+// void ll()
+// {
+// 	system("leaks a.out");
+// }
+
+// int	main()
+// {
 	
-	int	fd;
-	char	*b;
-	fd = open("text.txt", O_RDONLY);                                                                                                                                                                                                                                                                                                                                                                                                   
-	printf("%s", (b = get_next_line(fd)));
-	free(b);
-	// while(1);
-}
+// 	int	fd;
+// 	char	*b;
+// 	fd = open("text.txt", O_RDONLY);                                                                                                                                                                                                                                                                                                                                                                                                   
+// 	printf("%s", (b = get_next_line(fd)));
+// 	free(b);
+// 	printf("%s", (b = get_next_line(fd)));
+// 	free(b);
+// 	printf("%s", (b = get_next_line(fd)));
+// 	free(b);
+// 	printf("%s", (b = get_next_line(fd)));
+// 	atexit(ll);
+// 	free(b);
+// 	//  while(1);
+// }
