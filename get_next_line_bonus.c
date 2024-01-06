@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bel-barb <bel-barb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/03 18:21:09 by bel-barb          #+#    #+#             */
-/*   Updated: 2024/01/06 08:23:38 by bel-barb         ###   ########.fr       */
+/*   Created: 2024/01/06 10:33:23 by bel-barb          #+#    #+#             */
+/*   Updated: 2024/01/06 10:57:26 by bel-barb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_strjoin_free_s2(char *s1, char *s2)
 {
@@ -118,50 +118,28 @@ char	*after_nl(char **buf)
 
 char	*get_next_line(int fd)
 {
-	static char	*rest = NULL;
+	static char	*rest[OPEN_MAX];
 	char		*buf;
 	char		*line;
 	char		*tmp;
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || fd >= OPEN_MAX || read(fd, 0, 0) < 0)
-		return (free(rest), rest = NULL, NULL);
+		return (free(rest[fd]), rest[fd] = NULL, NULL);
 	line = NULL;
-	if (rest != NULL)
+	if (rest[fd] != NULL)
 	{
-		line = before_nl(&rest);
-		if (ft_strchr(rest, '\n'))
-			return (rest = after_nl(&rest), line);
+		line = before_nl(&rest[fd]);
+		if (ft_strchr(rest[fd], '\n'))
+			return (rest[fd] = after_nl(&rest[fd]), line);
 	}
 	buf = ft_calloc(BUFFER_SIZE + 1, 1);
 	if (!buf)
-		return (free(rest), rest = NULL, NULL);
+		return (free(rest[fd]), rest[fd] = NULL, NULL);
 	read_file(fd, &buf);
 	tmp = before_nl(&buf);
 	line = ft_strjoin_free_s2(line, tmp);
-	free(rest);
-	rest = NULL;
-	rest = after_nl(&buf);
+	free(rest[fd]);
+	rest[fd] = NULL;
+	rest[fd] = after_nl(&buf);
 	return (free(buf), buf = NULL, line);
 }
-// #include <stdio.h>
-// void ll()
-// {
-// 	system("leaks a.out");
-// }
-
-// int	main()
-// {
-// 	int	fd;
-// 	char	*b;
-// fd = open("text.txt", O_RDONLY);
-// 	printf("%s", (b = get_next_line(fd)));
-// 	free(b);
-// 	printf("%s", (b = get_next_line(fd)));
-// 	free(b);
-// 	printf("%s", (b = get_next_line(fd)));
-// 	free(b);
-// 	printf("%s", (b = get_next_line(fd)));
-// 	atexit(ll);
-// 	free(b);
-// 	//  while(1);
-// }
