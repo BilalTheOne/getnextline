@@ -144,3 +144,25 @@ char	*get_next_line(int fd)
 		return (free(buf), NULL);
 	return (rest = after_nl(&buf), free(buf), buf = NULL, line);
 }
+// #include <stdio.h>
+// void ll()
+// {
+// 	system("leaks a.out");
+// }
+
+// int	main()
+// {
+// 	int	fd;
+// 	char	*b;
+// fd = open("text.txt", O_RDONLY);
+// 	printf("%s", (b = get_next_line(fd)));
+// 	free(b);
+// 	printf("%s", (b = get_next_line(fd)));
+// 	free(b);
+// 	printf("%s", (b = get_next_line(fd)));
+// 	free(b);
+// 	printf("%s", (b = get_next_line(fd)));
+// 	atexit(ll);
+// 	free(b);
+// 	//  while(1);
+// }
